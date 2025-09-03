@@ -5,6 +5,8 @@ import { RefreshCw } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { Legend, Tooltip, CartesianGrid, ResponsiveContainer, Pie, XAxis, Line, Bar, PieChart, BarChart, Cell, LineChart, YAxis } from 'recharts';
 import { Button } from '@/components/ui/button';
+import DashboardLayout from '@/components/ui/dashboard-layout';
+import FlowStyleCard from '@/components/ui/flow-style-card';
 // 定义专家类别
 const EXPERT_CATEGORIES = [
   { id: 'skill', name: '技能专家' },
@@ -168,52 +170,91 @@ const ExpertPerformance = () => {
   const aiSuggestions = generateAISuggestions();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-6">
-      <div className="max-w-7xl mx-auto">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-blue-900">专家业绩分析看板</h1>
-        </header>
+    <DashboardLayout title="专家业绩分析看板">
+      <div className="space-y-6">
+
 
         {/* 专家类别选择器 */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div className="w-full md:w-auto">
-            <label className="block text-sm font-medium text-gray-700 mb-1">选择专家类别</label>
-            <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-              <SelectTrigger className="w-full md:w-64">
-                <SelectValue placeholder="选择专家类别" />
-              </SelectTrigger>
-              <SelectContent>
-                {EXPERT_CATEGORIES.map(category => (
-                  <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div 
+          className="p-4 rounded-lg"
+          style={{
+            background: 'rgba(19, 25, 47, 0.8)',
+            border: '1px solid #343f4b',
+          }}
+        >
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="w-full md:w-auto">
+              <label className="block text-sm font-medium text-cyan-100 mb-1">选择专家类别</label>
+              <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+                <SelectTrigger className="w-full md:w-64 bg-slate-800 border-slate-600 text-white">
+                  <SelectValue placeholder="选择专家类别" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-600">
+                  {EXPERT_CATEGORIES.map(category => (
+                    <SelectItem key={category.id} value={category.id} className="text-white hover:bg-slate-700">
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={handleRegenerateData} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-none">
+              <RefreshCw className="mr-2 h-4 w-4" />
+              重新生成数据
+            </Button>
           </div>
-          <Button onClick={handleRegenerateData} variant="outline">
-            <RefreshCw className="mr-2 h-4 w-4" />
-            重新生成数据
-          </Button>
         </div>
 
-        {/* 专家考核情况概览 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* 考核人数和结果分布 */}
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle>专家考核情况</CardTitle>
-            </CardHeader>
-            <CardContent>
+        {/* 主要内容区域 */}
+        <div className="space-y-6">
+          {/* 第一行：专家考核情况概览 */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* 考核人数和结果分布 */}
+            <div 
+              className="lg:col-span-2 p-6 rounded-lg"
+              style={{
+                background: 'rgba(19, 25, 47, 0.8)',
+                border: '1px solid #343f4b',
+              }}
+            >
+              <h3 className="text-lg font-medium text-cyan-100 mb-6">专家考核情况分析</h3>
+              
+              {/* 参与考核人数 */}
+              <div className="mb-6">
+                <div 
+                  className="p-4 rounded-lg flex items-center justify-between"
+                  style={{
+                    background: 'rgba(71, 218, 232, 0.1)',
+                    border: '1px solid rgba(71, 218, 232, 0.3)',
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="p-2 rounded-lg"
+                      style={{
+                        background: 'rgba(71, 218, 232, 0.2)',
+                        color: '#47dae8'
+                      }}
+                    >
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm text-cyan-200">参与考核人数</p>
+                      <p className="text-2xl font-bold text-white">{mockData.assessmentData.totalParticipants} 人</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-cyan-200">当前类别总数</p>
+                    <p className="text-sm text-green-400">+5%</p>
+                  </div>
+                </div>
+              </div>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Card className="mb-4">
-                    <CardContent className="flex items-center justify-center p-6">
-                      <div className="text-center">
-                        <h3 className="text-lg font-medium mb-2">参与考核人数</h3>
-                        <p className="text-3xl font-bold text-blue-600">{mockData.assessmentData.totalParticipants}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <h4 className="text-md font-medium mb-2">考核结果分布</h4>
+                  <h4 className="text-md font-medium mb-4 text-cyan-100">考核结果分布</h4>
                   <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
                       <Pie
@@ -236,120 +277,158 @@ const ExpertPerformance = () => {
                 </div>
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-md font-medium mb-2">业绩任务</h4>
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div className="bg-blue-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">中位数</p>
-                        <p className="text-xl font-bold">{mockData.performanceTask.median}</p>
+                    <h4 className="text-md font-medium mb-2 text-cyan-100">业绩任务</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(71, 218, 232, 0.1)', border: '1px solid rgba(71, 218, 232, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">中位数</p>
+                        <p className="text-lg font-bold text-white">{mockData.performanceTask.median}</p>
                       </div>
-                      <div className="bg-green-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">最高分</p>
-                        <p className="text-xl font-bold">{mockData.performanceTask.max}</p>
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(80, 227, 194, 0.1)', border: '1px solid rgba(80, 227, 194, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">最高分</p>
+                        <p className="text-lg font-bold text-white">{mockData.performanceTask.max}</p>
                       </div>
-                      <div className="bg-red-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">最低分</p>
-                        <p className="text-xl font-bold">{mockData.performanceTask.min}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-md font-medium mb-2">目标任务</h4>
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div className="bg-blue-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">中位数</p>
-                        <p className="text-xl font-bold">{mockData.targetTask.median}</p>
-                      </div>
-                      <div className="bg-green-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">最高分</p>
-                        <p className="text-xl font-bold">{mockData.targetTask.max}</p>
-                      </div>
-                      <div className="bg-red-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">最低分</p>
-                        <p className="text-xl font-bold">{mockData.targetTask.min}</p>
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(255, 107, 107, 0.1)', border: '1px solid rgba(255, 107, 107, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">最低分</p>
+                        <p className="text-lg font-bold text-white">{mockData.performanceTask.min}</p>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-md font-medium mb-2">部门(单位)任务</h4>
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div className="bg-blue-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">中位数</p>
-                        <p className="text-xl font-bold">{mockData.departmentTask.median}</p>
+                    <h4 className="text-md font-medium mb-2 text-cyan-100">目标任务</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(71, 218, 232, 0.1)', border: '1px solid rgba(71, 218, 232, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">中位数</p>
+                        <p className="text-lg font-bold text-white">{mockData.targetTask.median}</p>
                       </div>
-                      <div className="bg-green-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">最高分</p>
-                        <p className="text-xl font-bold">{mockData.departmentTask.max}</p>
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(80, 227, 194, 0.1)', border: '1px solid rgba(80, 227, 194, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">最高分</p>
+                        <p className="text-lg font-bold text-white">{mockData.targetTask.max}</p>
                       </div>
-                      <div className="bg-red-100 p-3 rounded">
-                        <p className="text-sm text-gray-600">最低分</p>
-                        <p className="text-xl font-bold">{mockData.departmentTask.min}</p>
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(255, 107, 107, 0.1)', border: '1px solid rgba(255, 107, 107, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">最低分</p>
+                        <p className="text-lg font-bold text-white">{mockData.targetTask.min}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-md font-medium mb-2 text-cyan-100">部门任务</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(71, 218, 232, 0.1)', border: '1px solid rgba(71, 218, 232, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">中位数</p>
+                        <p className="text-lg font-bold text-white">{mockData.departmentTask.median}</p>
+                      </div>
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(80, 227, 194, 0.1)', border: '1px solid rgba(80, 227, 194, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">最高分</p>
+                        <p className="text-lg font-bold text-white">{mockData.departmentTask.max}</p>
+                      </div>
+                      <div 
+                        className="p-3 rounded text-center"
+                        style={{ background: 'rgba(255, 107, 107, 0.1)', border: '1px solid rgba(255, 107, 107, 0.3)' }}
+                      >
+                        <p className="text-xs text-cyan-200">最低分</p>
+                        <p className="text-lg font-bold text-white">{mockData.departmentTask.min}</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* 年度对比图表 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>专家考核得分年度对比</CardTitle>
-            </CardHeader>
-            <CardContent>
+            {/* 年度对比图表 */}
+            <div 
+              className="p-6 rounded-lg"
+              style={{
+                background: 'rgba(19, 25, 47, 0.8)',
+                border: '1px solid #343f4b',
+              }}
+            >
+              <h3 className="text-lg font-medium text-cyan-100 mb-6">专家考核得分年度对比</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   data={mockData.annualComparison}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(71, 218, 232, 0.2)" />
+                  <XAxis dataKey="name" stroke="#bcdcff" />
+                  <YAxis stroke="#bcdcff" />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'rgba(19, 25, 47, 0.95)',
+                      border: '1px solid rgba(71, 218, 232, 0.3)',
+                      borderRadius: '8px',
+                      color: '#bcdcff'
+                    }}
+                  />
                   <Legend />
-                  <Bar dataKey="current" name="当前年度" fill={BAR_COLORS[0]} />
-                  <Bar dataKey="previous" name="上一年度" fill={BAR_COLORS[1]} />
+                  <Bar dataKey="current" name="当前年度" fill="#47dae8" />
+                  <Bar dataKey="previous" name="上一年度" fill="#89e5ff" />
                 </BarChart>
               </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </div>
 
-        {/* 考核指标优化分析 */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>考核指标优化分析</CardTitle>
-          </CardHeader>
-          <CardContent>
+          {/* 考核指标优化分析 */}
+          <div 
+            className="p-6 rounded-lg"
+            style={{
+              background: 'rgba(19, 25, 47, 0.8)',
+              border: '1px solid #343f4b',
+            }}
+          >
+            <h3 className="text-lg font-medium text-cyan-100 mb-6">考核指标优化分析</h3>
             <div className="mb-8">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">二级维度</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">离散度</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">得分中位数</th>
+                <table className="min-w-full">
+                  <thead>
+                    <tr className="border-b border-cyan-400/30">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-cyan-200 uppercase tracking-wider">排名</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-cyan-200 uppercase tracking-wider">二级维度</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-cyan-200 uppercase tracking-wider">离散度</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-cyan-200 uppercase tracking-wider">得分中位数</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="divide-y divide-white/10">
                     {sortedDimensions.map((dimension, index) => (
                       <tr 
                         key={dimension.name} 
-                        className={index < 3 ? 'bg-red-50' : index >= sortedDimensions.length - 3 ? 'bg-green-50' : ''}
+                        className="hover:bg-cyan-400/5 transition-colors"
                       >
-                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{index + 1}</td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{dimension.name}</td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-white">{index + 1}</td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-white">{dimension.name}</td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            index < 3 ? 'bg-red-100 text-red-800' : 
-                            index >= sortedDimensions.length - 3 ? 'bg-green-100 text-green-800' : 
-                            'bg-gray-100 text-gray-800'
+                            index < 3 ? 'bg-red-500/20 text-red-300 border border-red-500/30' : 
+                            index >= sortedDimensions.length - 3 ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 
+                            'bg-gray-500/20 text-gray-300 border border-gray-500/30'
                           }`}>
                             {dimension.dispersion}
                           </span>
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{dimension.median}</td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-cyan-100">{dimension.median}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -360,13 +439,20 @@ const ExpertPerformance = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* 离散度前三 */}
               <div>
-                <h3 className="text-lg font-medium mb-4 text-red-700">离散度前三名</h3>
+                <h3 className="text-lg font-medium mb-4 text-red-300">离散度前三名</h3>
                 <div className="space-y-6">
                   {top3Dispersion.map((dimension, index) => (
-                    <div key={dimension.name} className="border border-gray-200 rounded-lg p-4">
+                    <div 
+                      key={dimension.name} 
+                      className="p-4 rounded-lg"
+                      style={{
+                        background: 'rgba(255, 107, 107, 0.1)',
+                        border: '1px solid rgba(255, 107, 107, 0.3)',
+                      }}
+                    >
                       <div className="flex justify-between items-center mb-2">
-                        <h4 className="font-medium">{dimension.name}</h4>
-                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+                        <h4 className="font-medium text-white">{dimension.name}</h4>
+                        <span className="bg-red-500/20 text-red-300 px-2 py-1 rounded-full text-xs font-medium border border-red-500/30">
                           离散度: {dimension.dispersion}
                         </span>
                       </div>
@@ -377,11 +463,18 @@ const ExpertPerformance = () => {
                             layout="vertical"
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                           >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis type="number" />
-                            <YAxis dataKey="range" type="category" scale="band" />
-                            <Tooltip />
-                            <Bar dataKey="count" name="人数" fill="#ef4444" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(71, 218, 232, 0.2)" />
+                            <XAxis type="number" stroke="#bcdcff" />
+                            <YAxis dataKey="range" type="category" scale="band" stroke="#bcdcff" />
+                            <Tooltip 
+                              contentStyle={{
+                                backgroundColor: 'rgba(19, 25, 47, 0.95)',
+                                border: '1px solid rgba(71, 218, 232, 0.3)',
+                                borderRadius: '8px',
+                                color: '#bcdcff'
+                              }}
+                            />
+                            <Bar dataKey="count" name="人数" fill="#ff6b6b" />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
@@ -392,13 +485,20 @@ const ExpertPerformance = () => {
 
               {/* 离散度后三 */}
               <div>
-                <h3 className="text-lg font-medium mb-4 text-green-700">离散度后三名</h3>
+                <h3 className="text-lg font-medium mb-4 text-green-300">离散度后三名</h3>
                 <div className="space-y-6">
                   {bottom3Dispersion.map((dimension, index) => (
-                    <div key={dimension.name} className="border border-gray-200 rounded-lg p-4">
+                    <div 
+                      key={dimension.name} 
+                      className="p-4 rounded-lg"
+                      style={{
+                        background: 'rgba(80, 227, 194, 0.1)',
+                        border: '1px solid rgba(80, 227, 194, 0.3)',
+                      }}
+                    >
                       <div className="flex justify-between items-center mb-2">
-                        <h4 className="font-medium">{dimension.name}</h4>
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                        <h4 className="font-medium text-white">{dimension.name}</h4>
+                        <span className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full text-xs font-medium border border-green-500/30">
                           离散度: {dimension.dispersion}
                         </span>
                       </div>
@@ -409,11 +509,18 @@ const ExpertPerformance = () => {
                             layout="vertical"
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                           >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis type="number" />
-                            <YAxis dataKey="range" type="category" scale="band" />
-                            <Tooltip />
-                            <Bar dataKey="count" name="人数" fill="#22c55e" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(71, 218, 232, 0.2)" />
+                            <XAxis type="number" stroke="#bcdcff" />
+                            <YAxis dataKey="range" type="category" scale="band" stroke="#bcdcff" />
+                            <Tooltip 
+                              contentStyle={{
+                                backgroundColor: 'rgba(19, 25, 47, 0.95)',
+                                border: '1px solid rgba(71, 218, 232, 0.3)',
+                                borderRadius: '8px',
+                                color: '#bcdcff'
+                              }}
+                            />
+                            <Bar dataKey="count" name="人数" fill="#50e3c2" />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
@@ -422,27 +529,36 @@ const ExpertPerformance = () => {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* AI建议 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>AI优化建议</CardTitle>
-          </CardHeader>
-          <CardContent>
+          {/* AI建议 */}
+          <div 
+            className="p-6 rounded-lg"
+            style={{
+              background: 'rgba(19, 25, 47, 0.8)',
+              border: '1px solid #343f4b',
+            }}
+          >
+            <h3 className="text-lg font-medium text-cyan-100 mb-6">AI优化建议</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {aiSuggestions.map((suggestion) => (
-                <div key={suggestion.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <h3 className="font-medium text-gray-900 mb-2">{suggestion.title}</h3>
-                  <p className="text-sm text-gray-600">{suggestion.content}</p>
+                <div 
+                  key={suggestion.id} 
+                  className="p-4 rounded-lg transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'rgba(71, 218, 232, 0.1)',
+                    border: '1px solid rgba(71, 218, 232, 0.3)',
+                  }}
+                >
+                  <h3 className="font-medium text-white mb-2">{suggestion.title}</h3>
+                  <p className="text-sm text-cyan-100">{suggestion.content}</p>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
